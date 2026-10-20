@@ -38,10 +38,10 @@ echo "==> 未签名构建（真机，Release）"
 rm -rf build
 xcodebuild \
   -project QJKeyboard.xcodeproj \
-  -target QJApp \
-  -target QJKeyboard \
+  -scheme QJApp \
   -configuration Release \
   -sdk iphoneos \
+  -destination "generic/platform=iOS" \
   -derivedDataPath build \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
@@ -59,12 +59,13 @@ echo "==> 组装 PlugIns/QJKeyboard.appex"
 mkdir -p "$APP_PATH/PlugIns"
 rm -rf "$APPEX_PATH"
 cp -R "$APPEX_BUILT" "$APPEX_PATH"
+
 if [[ ! -d "$APP_PATH" ]]; then
   echo "❌ 构建产物缺失：$APP_PATH" >&2
   exit 1
 fi
 if [[ ! -d "$APPEX_PATH" ]]; then
-  echo "❌ 键盘扩展未嵌入：${APPEX_PATH}（检查 QJApp 对 QJKeyboard 的 target 依赖）" >&2
+  echo "❌ 键盘扩展未嵌入：$APPEX_PATH" >&2
   exit 1
 fi
 
