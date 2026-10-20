@@ -29,7 +29,7 @@ targets:
     settings:
       base:
         PRODUCT_NAME: QJApp
-        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.keyboard
+        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.kbd
         INFOPLIST_FILE: App/Info.plist
         ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "NO"
     # embed: false —— 只把 QJKeyboard 当构建依赖，不交给 Xcode 的 Embed App Extensions。
@@ -49,7 +49,7 @@ targets:
     settings:
       base:
         PRODUCT_NAME: QJKeyboard
-        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.keyboard.ext
+        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.kbd.ext
         INFOPLIST_FILE: Keyboard/Info.plist
         SWIFT_OBJC_BRIDGING_HEADER: Keyboard/qingjian_ios.h
         # Rust staticlib 是纯静态库，只链接、不嵌入；链接参数兜底。
