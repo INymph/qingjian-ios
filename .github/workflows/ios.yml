@@ -24,12 +24,15 @@ on:
 jobs:
   build:
     name: Build unsigned IPA (TrollStore)
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 45
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Show Xcode
+        run: xcodebuild -version
 
       - name: Select Rust toolchain
         run: |
@@ -44,7 +47,7 @@ jobs:
 
       - name: Fetch keyboard resources
         env:
-          INCLUDE_LM: ${{ github.event.inputs.include_lm && '1' || '0' }}
+          INCLUDE_LM: ${{ github.event.inputs.include_lm == 'true' && '1' || '0' }}
         run: bash apps/ios/scripts/fetch-resources.sh
 
       - name: Generate project, build and pack IPA
