@@ -1,0 +1,29 @@
+[package]
+name = "qingjian-ios"
+version = "0.1.1"
+edition = "2024"
+publish = false
+description = "青简 iOS 键盘扩展的平台无关内核桥接（C ABI）。"
+
+# staticlib：供 Swift / Xcode 链接进键盘扩展；
+# rlib：便于同 workspace 里的单元测试与其他 crate 复用。
+[lib]
+crate-type = ["staticlib", "rlib"]
+
+[dependencies]
+qingjian-core = { workspace = true }
+qingjian-dictionary = { workspace = true }
+qingjian-translate = { workspace = true }
+qingjian-learning = { workspace = true }
+qingjian-lm = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[features]
+# M0 默认不启用神经重打分（模型体积、键盘扩展内存限制）。
+default = []
+neural = ["dep:qingjian-neural"]
+
+[dependencies.qingjian-neural]
+workspace = true
+optional = true

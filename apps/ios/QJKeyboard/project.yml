@@ -1,0 +1,57 @@
+name: QJKeyboard
+options:
+  bundleIdPrefix: app.qingjian
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "16.0"
+  # 未签名构建：最终交给 TrollStore 永久签名（fakesign）。
+  developmentLanguage: zh-Hans
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGN_IDENTITY: ""
+    CODE_SIGN_STYLE: "Automatic"
+    ONLY_ACTIVE_ARCH: "NO"
+    ENABLE_USER_SCRIPT_SANDBOXING: "NO"
+
+targets:
+  # 宿主 App：仅承载键盘扩展与引导页。
+  QJApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    settings:
+      base:
+        PRODUCT_NAME: QJApp
+        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.keyboard
+        INFOPLIST_FILE: App/Info.plist
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "NO"
+    dependencies:
+      - target: QJKeyboard
+
+  # 键盘扩展：链接 Rust 静态库 xcframework，携带词库资源。
+  QJKeyboard:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Keyboard
+      - path: Resources
+        type: folder
+    settings:
+      base:
+        PRODUCT_NAME: QJKeyboard
+        PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.keyboard.ext
+        INFOPLIST_FILE: Keyboard/Info.plist
+        SWIFT_OBJC_BRIDGING_HEADER: Keyboard/qingjian_ios.h
+        # Rust staticlib 是纯静态库，只链接、不嵌入；链接参数兜底。
+        OTHER_LDFLAGS: "-ObjC -lc++"
+    dependencies:
+      - framework: Frameworks/qingjian_ios.xcframework
+        embed: false
+        codeSign: false

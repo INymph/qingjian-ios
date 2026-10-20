@@ -1,0 +1,57 @@
+name: Build iOS Keyboard (IPA)
+
+on:
+  # 推送到 iOS 壳或内核相关路径时自动构建。
+  push:
+    paths:
+      - "apps/ios/**"
+      - "crates/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/ios.yml"
+  # 也允许在 Actions 页面手动触发。
+  workflow_dispatch:
+    inputs:
+      include_lm:
+        description: "是否打包二元语言模型 lm.qj（内存占用更高，首版建议不勾选）"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Build unsigned IPA (TrollStore)
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Rust toolchain
+        run: |
+          rustup show
+          rustup target add aarch64-apple-ios
+
+      - name: Install XcodeGen and ldid
+        run: brew install xcodegen ldid
+
+      - name: Build Rust xcframework
+        run: bash apps/ios/scripts/build-xcframework.sh
+
+      - name: Fetch keyboard resources
+        env:
+          INCLUDE_LM: ${{ github.event.inputs.include_lm && '1' || '0' }}
+        run: bash apps/ios/scripts/fetch-resources.sh
+
+      - name: Generate project, build and pack IPA
+        run: bash apps/ios/scripts/pack-ipa.sh apps/ios/ipa-out
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: QJKeyboard-unsigned
+          path: apps/ios/ipa-out/QJKeyboard-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 90
