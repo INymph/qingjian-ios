@@ -23,7 +23,8 @@ unsafe fn c_str<'a>(p: *const c_char) -> Option<&'a str> {
     if p.is_null() {
         None
     } else {
-        CStr::from_ptr(p).to_str().ok()
+        // SAFETY: 调用方保证 `p` 指向以 `\0` 结尾、调用期间有效的字节串。
+        unsafe { CStr::from_ptr(p).to_str().ok() }
     }
 }
 
@@ -43,7 +44,7 @@ fn into_c_string(s: String) -> *mut c_char {
 /// - `resources_dir`：bundle 内只读资源目录（UTF-8）；
 /// - `writable_dir`：扩展私有可写目录（UTF-8）；
 /// - `lang_code`：译词语言代码（如 `en`）。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_new(
     resources_dir: *const c_char,
     writable_dir: *const c_char,
@@ -67,7 +68,7 @@ pub extern "C" fn qj_engine_new(
 ///
 /// # Safety
 /// `engine` 必须是 [`qj_engine_new`] 返回且未被释放过的句柄；允许传 null。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_free(engine: *mut QjEngine) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if !engine.is_null() {
@@ -80,7 +81,7 @@ pub extern "C" fn qj_engine_free(engine: *mut QjEngine) {
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]；`input` 为合法 UTF-8 C 字符串。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_set_input(engine: *mut QjEngine, input: *const c_char) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if let (Some(e), Some(text)) = (engine.as_ref(), c_str(input)) {
@@ -93,7 +94,7 @@ pub extern "C" fn qj_engine_set_input(engine: *mut QjEngine, input: *const c_cha
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_clear(engine: *mut QjEngine) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if let Some(e) = engine.as_ref() {
@@ -106,7 +107,7 @@ pub extern "C" fn qj_engine_clear(engine: *mut QjEngine) {
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_query(engine: *mut QjEngine) -> *mut c_char {
     let result = catch_unwind(AssertUnwindSafe(|| unsafe {
         engine.as_ref().map(QjEngine::query)
@@ -121,7 +122,7 @@ pub extern "C" fn qj_engine_query(engine: *mut QjEngine) -> *mut c_char {
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_commit(engine: *mut QjEngine, index: usize) -> *mut c_char {
     let result = catch_unwind(AssertUnwindSafe(|| unsafe {
         engine.as_ref().and_then(|e| e.commit_index(index))
@@ -136,7 +137,7 @@ pub extern "C" fn qj_engine_commit(engine: *mut QjEngine, index: usize) -> *mut 
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_commit_raw(engine: *mut QjEngine) -> *mut c_char {
     let result = catch_unwind(AssertUnwindSafe(|| unsafe {
         engine.as_ref().map(QjEngine::commit_raw)
@@ -151,7 +152,7 @@ pub extern "C" fn qj_engine_commit_raw(engine: *mut QjEngine) -> *mut c_char {
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_flush(engine: *mut QjEngine) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if let Some(e) = engine.as_ref() {
@@ -164,7 +165,7 @@ pub extern "C" fn qj_engine_flush(engine: *mut QjEngine) {
 ///
 /// # Safety
 /// 同 [`qj_engine_free`]。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_engine_set_traditional(engine: *mut QjEngine, on: i32) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if let Some(e) = engine.as_ref() {
@@ -177,7 +178,7 @@ pub extern "C" fn qj_engine_set_traditional(engine: *mut QjEngine, on: i32) {
 ///
 /// # Safety
 /// `p` 必须是本 crate 返回的、尚未释放的字符串，或为 null。
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn qj_string_free(p: *mut c_char) {
     let _ = catch_unwind(AssertUnwindSafe(|| unsafe {
         if !p.is_null() {
