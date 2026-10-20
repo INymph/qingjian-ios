@@ -49,7 +49,7 @@ jobs:
         run: bash apps/ios/scripts/pack-ipa.sh apps/ios/ipa-out
 
       - name: Upload unsigned IPA
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: QJKeyboard-unsigned
           path: apps/ios/ipa-out/QJKeyboard-unsigned.ipa
