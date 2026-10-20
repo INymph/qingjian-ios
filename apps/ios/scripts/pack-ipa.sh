@@ -38,10 +38,10 @@ echo "==> 未签名构建（真机，Release）"
 rm -rf build
 xcodebuild \
   -project QJKeyboard.xcodeproj \
-  -scheme QJApp \
+  -target QJApp \
+  -target QJKeyboard \
   -configuration Release \
   -sdk iphoneos \
-  -destination "generic/platform=iOS" \
   -derivedDataPath build \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
@@ -50,7 +50,15 @@ xcodebuild \
   build
 
 APP_PATH="build/Build/Products/Release-iphoneos/QJApp.app"
+APPEX_BUILT="build/Build/Products/Release-iphoneos/QJKeyboard.appex"
 APPEX_PATH="$APP_PATH/PlugIns/QJKeyboard.appex"
+
+# 手工把扩展放进 PlugIns/：绕开 Xcode 的 Embed App Extensions（未签名时它的
+# ValidateEmbeddedBinary 会失败），TrollStore 不需要那一步的产物。
+echo "==> 组装 PlugIns/QJKeyboard.appex"
+mkdir -p "$APP_PATH/PlugIns"
+rm -rf "$APPEX_PATH"
+cp -R "$APPEX_BUILT" "$APPEX_PATH"
 if [[ ! -d "$APP_PATH" ]]; then
   echo "❌ 构建产物缺失：$APP_PATH" >&2
   exit 1
