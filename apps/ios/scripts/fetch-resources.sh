@@ -18,7 +18,7 @@ URL="https://github.com/$REPO/releases/download/$TAG/qingjian-data.tar.gz"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-echo "==> 下载数据包 $TAG（约 137MB）"
+echo "==> 下载数据包 ${TAG}（约 137MB）"
 curl -fL --retry 3 -o "$TMP/data.tar.gz" "$URL"
 
 echo "==> 校验 SHA-256"
@@ -28,7 +28,7 @@ else
   ACTUAL="$(shasum -a 256 "$TMP/data.tar.gz" | cut -d' ' -f1)"
 fi
 if [[ "$ACTUAL" != "$EXPECTED_SHA" ]]; then
-  echo "❌ 数据包校验失败：期望 $EXPECTED_SHA，实际 $ACTUAL" >&2
+  echo "❌ 数据包校验失败：期望 ${EXPECTED_SHA}，实际 ${ACTUAL}" >&2
   exit 1
 fi
 

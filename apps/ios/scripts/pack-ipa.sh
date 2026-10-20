@@ -56,7 +56,7 @@ if [[ ! -d "$APP_PATH" ]]; then
   exit 1
 fi
 if [[ ! -d "$APPEX_PATH" ]]; then
-  echo "❌ 键盘扩展未嵌入：$APPEX_PATH（检查 QJApp 对 QJKeyboard 的 target 依赖）" >&2
+  echo "❌ 键盘扩展未嵌入：${APPEX_PATH}（检查 QJApp 对 QJKeyboard 的 target 依赖）" >&2
   exit 1
 fi
 

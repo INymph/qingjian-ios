@@ -1,8 +1,10 @@
 name: Build iOS Keyboard (IPA)
 
 on:
-  # 推送到 iOS 壳或内核相关路径时自动构建。
+  # 只在 main 分支、且 iOS 壳或内核相关路径变化时构建（避免 dependabot 等分支浪费 macOS 额度）。
   push:
+    branches:
+      - main
     paths:
       - "apps/ios/**"
       - "crates/**"
