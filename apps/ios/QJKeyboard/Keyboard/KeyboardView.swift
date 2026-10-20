@@ -22,7 +22,7 @@ struct KeyboardView: View {
         .padding(.horizontal, 4)
         .padding(.top, 6)
         .padding(.bottom, 6)
-        .background(Color(red: 0.10, green: 0.14, 0.12))
+        .background(Color(red: 0.10, green: 0.14, blue: 0.12))
     }
 
     // MARK: - 候选栏
@@ -32,18 +32,18 @@ struct KeyboardView: View {
             // 编码 / 上屏中显示
             Text(controller.isEnglish ? "英文" : (controller.pinyin.isEmpty ? "青简" : controller.pinyin))
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(Color(red: 0.44, green: 0.78, green: 0.60))
+                .foregroundColor(Color(red: 0.44, green: 0.78, blue: 0.60))
                 .frame(width: 56)
                 .lineLimit(1)
 
             Rectangle()
-                .fill(Color(red: 0.22, green: 0.30, 0.26))
+                .fill(Color(red: 0.22, green: 0.30, blue: 0.26))
                 .frame(width: 1, height: 22)
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
                     if controller.candidates.isEmpty && !controller.pinyin.isEmpty {
-                        Text("无候选").font(.system(size: 15)).foregroundColor(Color(red: 0.55, green: 0.62, 0.58))
+                        Text("无候选").font(.system(size: 15)).foregroundColor(Color(red: 0.55, green: 0.62, blue: 0.58))
                             .padding(.horizontal, 10)
                     }
                     ForEach(Array(controller.candidates.enumerated()), id: \.offset) { idx, word in
@@ -57,7 +57,7 @@ struct KeyboardView: View {
             .frame(height: 40)
         }
         .frame(height: 40)
-        .background(Color(red: 0.13, green: 0.18, 0.16))
+        .background(Color(red: 0.13, green: 0.18, blue: 0.16))
         .cornerRadius(8)
     }
 
@@ -110,10 +110,10 @@ private struct CharKey: View {
         Button(action: action) {
             Text(label)
                 .font(.system(size: 20, weight: .medium))
-                .foregroundColor(Color(red: 0.91, green: 0.94, 0.91))
+                .foregroundColor(Color(red: 0.91, green: 0.94, blue: 0.91))
                 .frame(maxWidth: .infinity)
                 .frame(height: 42)
-                .background(Color(red: 0.20, green: 0.26, 0.23))
+                .background(Color(red: 0.20, green: 0.26, blue: 0.23))
                 .cornerRadius(7)
         }
         .buttonStyle(PlainButtonStyle())
@@ -130,10 +130,10 @@ private struct WideKey: View {
         Button(action: action) {
             Text(label)
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(accent ? Color(red: 0.44, green: 0.78, 0.60) : Color(red: 0.85, green: 0.89, 0.86))
+                .foregroundColor(accent ? Color(red: 0.44, green: 0.78, blue: 0.60) : Color(red: 0.85, green: 0.89, blue: 0.86))
                 .frame(maxWidth: .infinity)
                 .frame(width: wide ? nil : 62, height: 42)
-                .background(Color(red: 0.14, green: 0.19, 0.17))
+                .background(Color(red: 0.14, green: 0.19, blue: 0.17))
                 .cornerRadius(7)
         }
         .buttonStyle(PlainButtonStyle())
@@ -149,7 +149,7 @@ private struct CandidateButton: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: emphasized ? 19 : 17, weight: emphasized ? .bold : .regular))
-                .foregroundColor(emphasized ? Color(red: 0.44, green: 0.78, 0.60) : Color(red: 0.90, green: 0.93, 0.90))
+                .foregroundColor(emphasized ? Color(red: 0.44, green: 0.78, blue: 0.60) : Color(red: 0.90, green: 0.93, blue: 0.90))
                 .padding(.horizontal, 12)
                 .frame(height: 34)
         }
