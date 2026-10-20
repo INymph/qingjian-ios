@@ -32,9 +32,11 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.qingjian.keyboard
         INFOPLIST_FILE: App/Info.plist
         ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "NO"
-    # 注意：这里故意不加 - target: QJKeyboard。
-    # Xcode 的 Embed App Extensions 会跑 ValidateEmbeddedBinary，未签名构建下它读不出
-    # appex 的 Info.plist 而报错。扩展由 pack-ipa.sh 单独构建并手工放进 PlugIns/。
+    # embed: false —— 只把 QJKeyboard 当构建依赖，不交给 Xcode 的 Embed App Extensions。
+    # 未签名构建下那一步会跑 ValidateEmbeddedBinary 并失败；扩展由 pack-ipa.sh 手工放进 PlugIns/。
+    dependencies:
+      - target: QJKeyboard
+        embed: false
 
   # 键盘扩展：链接 Rust 静态库 xcframework，携带词库资源。
   QJKeyboard:
